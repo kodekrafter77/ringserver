@@ -34,12 +34,20 @@ public class CacheServerImpl extends LRUCacheServiceGrpc.LRUCacheServiceImplBase
     public void get(GetRequest getRequest, StreamObserver<GetResponse> getResponse) {
         log.info("Got a get request");
         byte[] key = getRequest.getKey().toByteArray();
-        byte[] value = cache.get(ByteBuffer.wrap(key)).array();
-        GetResponse response = GetResponse.newBuilder()
-                .setValue(ByteString.copyFrom(value))
-                .build();
-        getResponse.onNext(response);
-        getResponse.onCompleted();
+        ByteBuffer bvalue = cache.get(ByteBuffer.wrap(key));
+        byte[] value = null;
+        if (bvalue != null) {
+            value = bvalue.array();
+
+
+            GetResponse response = GetResponse.newBuilder()
+                    .setValue(ByteString.copyFrom(value))
+                    .build();
+            getResponse.onNext(response);
+            getResponse.onCompleted();
+        } else {
+            log.info("no value found for key {}", key);
+        }
         log.info("get request completed");
     }
 }

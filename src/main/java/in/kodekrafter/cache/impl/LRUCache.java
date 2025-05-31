@@ -130,7 +130,7 @@ public class LRUCache<K, V> implements Cache<K,V> {
 
     private void startTTLScheduler() {
         executor.scheduleAtFixedRate(() -> {
-            log.info("Running ttl thread");
+            log.debug("Running ttl thread");
             if (!ttlEntries.isEmpty()) {
                 List<LRUCache<K, V>.CacheEntry> evictList = ttlEntries.stream()
                         .filter(vw -> System.currentTimeMillis() - vw.enterTs >= vw.ttl)
@@ -139,7 +139,7 @@ public class LRUCache<K, V> implements Cache<K,V> {
                 evictList.forEach(this::evictEntry);
 
             } else {
-                log.info("Cache is empty");
+                log.debug("Cache is empty");
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
