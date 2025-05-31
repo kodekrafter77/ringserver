@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.kodekrafter.cache.server";
+option java_outer_classname = "CacheServer";
+option objc_class_prefix = "RCS";
+
+package cache;
+
+message SetRequest {
+  bytes key = 1;
+  bytes value = 2;
+  int64 ttl = 3; // 0 means no ttl
+}
+
+message SetResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetRequest {
+  bytes key = 1;
+}
+
+message GetResponse {
+  bytes value = 1;
+  bool found = 2;
+}
+
+service LRUCacheService {
+  rpc Set(SetRequest) returns (SetResponse);
+  rpc Get(GetRequest) returns (GetResponse);
+}
