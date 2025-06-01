@@ -130,10 +130,9 @@ public class LRUCache<K, V> implements Cache<K,V> {
         executor.scheduleAtFixedRate(() -> {
             log.debug("Running ttl thread");
 
-            cache.entrySet().stream()
-                    .filter(e -> e.getValue().ttl > 0
-                            && System.currentTimeMillis() - e.getValue().enterTs >= e.getValue().ttl)
-                    .map(Map.Entry::getValue)
+            cache.values().stream()
+                    .filter(cacheEntry -> cacheEntry.ttl > 0
+                            && System.currentTimeMillis() - cacheEntry.enterTs >= cacheEntry.ttl)
                             .toList().forEach(this::evictEntry);
 
 
