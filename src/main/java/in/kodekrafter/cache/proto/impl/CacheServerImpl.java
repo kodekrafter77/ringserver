@@ -1,6 +1,7 @@
 package in.kodekrafter.cache.proto.impl;
 
 import in.kodekrafter.cache.impl.LRUCache;
+import in.kodekrafter.config.ConfigLoader;
 import io.grpc.stub.StreamObserver;
 import io.kodekrafter.cache.server.*;
 import org.slf4j.Logger;
@@ -11,7 +12,7 @@ import java.nio.ByteBuffer;
 public class CacheServerImpl extends LRUCacheServiceGrpc.LRUCacheServiceImplBase {
 
     private final Logger log = LoggerFactory.getLogger(CacheServerImpl.class);
-    private final LRUCache<ByteBuffer, ByteBuffer> cache = new LRUCache<>(10);
+    private final LRUCache<ByteBuffer, ByteBuffer> cache = new LRUCache<>(ConfigLoader.getCacheCapacity());
 
     @Override
     public  void set(SetRequest setRequest, StreamObserver<SetResponse> setResponse) {
