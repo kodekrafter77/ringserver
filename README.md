@@ -26,6 +26,37 @@ I will attempt to write a parallel project with _golang_ as it's fast becoming f
 
 Until then, happy learning!
 
+## Service Specification
+
+Here is the Service/API Specification:
+
+```protobuf
+message SetRequest {
+  string key = 1;
+  string value = 2;
+  int64 ttl = 3; // 0 means no ttl
+}
+
+message SetResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string value = 1;
+  bool found = 2;
+}
+
+service LRUCacheService {
+  rpc Set(SetRequest) returns (SetResponse);
+  rpc Get(GetRequest) returns (GetResponse);
+}
+```
+
 ## How to build and run?
 I assume you have Java 21+ and maven installed and mvn executable in in the path. 
 
