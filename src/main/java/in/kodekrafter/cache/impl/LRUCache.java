@@ -106,37 +106,23 @@ public class LRUCache<K, V> implements Cache<K,V> {
         }
     }
 
-    List<CacheEntry> getTTLEntries() {
-        try {
-            lock.readLock().lock();
-            return Collections.unmodifiableList(ttlEntries);
-        } finally {
-            lock.readLock().unlock();
-        }
 
-    }
-
-    void evictEntry(CacheEntry entry) {
-        try {
-            log.info("Evicting entry: {}", entry);
-            lock.writeLock().lock();
-            cache.remove(entry.key);
-        } finally {
-            lock.writeLock().unlock();
-        }
+    private void evictEntry(CacheEntry entry) {
+        log.info("Evicting entry: {}", entry);
+        cache.remove(entry.key);
     }
 
     private void startTTLScheduler() {
         executor.scheduleAtFixedRate(() -> {
             log.debug("Running ttl thread");
             try {
-                lock.readLock().lock();
+                lock.writeLock().lock();
                 cache.values().stream()
                         .filter(cacheEntry -> cacheEntry.ttl > 0
                                 && System.currentTimeMillis() - cacheEntry.enterTs >= cacheEntry.ttl)
                         .toList().forEach(this::evictEntry);
             } finally {
-                 lock.readLock().unlock();
+                lock.writeLock().unlock();
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
