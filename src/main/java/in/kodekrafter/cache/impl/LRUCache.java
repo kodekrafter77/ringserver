@@ -129,13 +129,15 @@ public class LRUCache<K, V> implements Cache<K,V> {
     private void startTTLScheduler() {
         executor.scheduleAtFixedRate(() -> {
             log.debug("Running ttl thread");
-
-            cache.values().stream()
-                    .filter(cacheEntry -> cacheEntry.ttl > 0
-                            && System.currentTimeMillis() - cacheEntry.enterTs >= cacheEntry.ttl)
-                            .toList().forEach(this::evictEntry);
-
-
+            try {
+                lock.readLock().lock();
+                cache.values().stream()
+                        .filter(cacheEntry -> cacheEntry.ttl > 0
+                                && System.currentTimeMillis() - cacheEntry.enterTs >= cacheEntry.ttl)
+                        .toList().forEach(this::evictEntry);
+            } finally {
+                 lock.readLock().unlock();
+            }
         }, 0, 1, TimeUnit.SECONDS);
     }
 }
