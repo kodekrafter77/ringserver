@@ -133,7 +133,7 @@ public class LRUCache<K, V> implements Cache<K,V> {
             log.debug("Running ttl thread");
             if (!ttlEntries.isEmpty()) {
                 List<LRUCache<K, V>.CacheEntry> evictList = ttlEntries.stream()
-                        .filter(vw -> System.currentTimeMillis() - vw.enterTs >= vw.ttl)
+                        .filter(vw -> (vw.ttl > 0 && (System.currentTimeMillis() - vw.enterTs >= vw.ttl)))
                         .toList();
 
                 evictList.forEach(this::evictEntry);
