@@ -1,6 +1,5 @@
 package in.kodekrafter;
 
-import in.kodekrafter.cache.impl.LRUCache;
 import in.kodekrafter.server.RingCacheServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

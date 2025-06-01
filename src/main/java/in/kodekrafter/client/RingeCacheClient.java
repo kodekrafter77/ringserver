@@ -1,6 +1,5 @@
 package in.kodekrafter.client;
 
-import com.google.protobuf.ByteString;
 import io.grpc.Channel;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
@@ -21,8 +20,8 @@ public class RingeCacheClient {
 
     public void set(String key, String value) {
         log.info("Setting key {}, value {}", key, value);
-        SetRequest request = SetRequest.newBuilder().setKey(ByteString.copyFrom(key.getBytes()))
-                .setValue(ByteString.copyFrom(value.getBytes()))
+        SetRequest request = SetRequest.newBuilder().setKey(key)
+                .setValue(value)
                 .setTtl(5000).build();
 
         try {
@@ -35,10 +34,10 @@ public class RingeCacheClient {
 
     public void get(String key) {
         log.info("Get key {}", key);
-        GetRequest request = GetRequest.newBuilder().setKey(ByteString.copyFrom(key.getBytes())).build();
+        GetRequest request = GetRequest.newBuilder().setKey(key).build();
         try {
             GetResponse response = blockingStub.get(request);
-            log.info("Response received {}", new String(response.getValue().toByteArray()));
+            log.info("Response received {}", response.getValue());
         }catch (Exception e) {
             log.error("Exception occurred during cache get", e);
         }

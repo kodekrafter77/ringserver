@@ -8,8 +8,8 @@ option objc_class_prefix = "RCS";
 package cache;
 
 message SetRequest {
-  bytes key = 1;
-  bytes value = 2;
+  string key = 1;
+  string value = 2;
   int64 ttl = 3; // 0 means no ttl
 }
 
@@ -19,11 +19,11 @@ message SetResponse {
 }
 
 message GetRequest {
-  bytes key = 1;
+  string key = 1;
 }
 
 message GetResponse {
-  bytes value = 1;
+  string value = 1;
   bool found = 2;
 }
 

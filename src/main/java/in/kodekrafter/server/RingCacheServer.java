@@ -1,6 +1,5 @@
 package in.kodekrafter.server;
 
-import in.kodekrafter.cache.impl.LRUCache;
 import in.kodekrafter.cache.proto.impl.CacheServerImpl;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;

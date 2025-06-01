@@ -1,6 +1,5 @@
 package in.kodekrafter.cache.proto.impl;
 
-import com.google.protobuf.ByteString;
 import in.kodekrafter.cache.impl.LRUCache;
 import io.grpc.stub.StreamObserver;
 import io.kodekrafter.cache.server.*;
@@ -17,15 +16,18 @@ public class CacheServerImpl extends LRUCacheServiceGrpc.LRUCacheServiceImplBase
     @Override
     public  void set(SetRequest setRequest, StreamObserver<SetResponse> setResponse) {
         log.info("Got a set request");
-        byte[] key = setRequest.getKey().toByteArray();
-        byte[] value = setRequest.getValue().toByteArray();
+        byte[] key = setRequest.getKey().getBytes();
+        byte[] value = setRequest.getValue().getBytes();
         long ttl = setRequest.getTtl();
         if (ttl > 0) {
             cache.set(ByteBuffer.wrap(key), ByteBuffer.wrap(value), ttl);
         } else {
             cache.set(ByteBuffer.wrap(key), ByteBuffer.wrap(value), ttl);
         }
-        SetResponse resp = SetResponse.newBuilder().build();
+        SetResponse resp = SetResponse.newBuilder()
+                .setMessage("OK")
+                .setSuccess(true)
+                .build();
         setResponse.onNext(resp);
         setResponse.onCompleted();
         log.info("set request completed");
@@ -33,20 +35,24 @@ public class CacheServerImpl extends LRUCacheServiceGrpc.LRUCacheServiceImplBase
 
     public void get(GetRequest getRequest, StreamObserver<GetResponse> getResponse) {
         log.info("Got a get request");
-        byte[] key = getRequest.getKey().toByteArray();
+        byte[] key = getRequest.getKey().getBytes();
         ByteBuffer bvalue = cache.get(ByteBuffer.wrap(key));
         byte[] value = null;
         if (bvalue != null) {
             value = bvalue.array();
-
-
             GetResponse response = GetResponse.newBuilder()
-                    .setValue(ByteString.copyFrom(value))
+                    .setValue(new String(value))
+                    .setFound(true)
                     .build();
             getResponse.onNext(response);
             getResponse.onCompleted();
         } else {
             log.info("no value found for key {}", key);
+            GetResponse response = GetResponse.newBuilder()
+                    .setFound(false)
+                    .build();
+            getResponse.onNext(response);
+            getResponse.onCompleted();
         }
         log.info("get request completed");
     }
