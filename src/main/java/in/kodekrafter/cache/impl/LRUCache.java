@@ -87,7 +87,6 @@ public class LRUCache<K, V> implements Cache<K,V> {
             lock.writeLock().lock();
             CacheEntry entry = new CacheEntry(key, value, ttl);
             cache.put(key, entry);
-            ttlEntries.add(entry);
             log.info(ttlEntries.toString());
         } finally {
             lock.writeLock().unlock();
@@ -122,7 +121,6 @@ public class LRUCache<K, V> implements Cache<K,V> {
             log.info("Evicting entry: {}", entry);
             lock.writeLock().lock();
             cache.remove(entry.key);
-            ttlEntries.remove(entry);
         } finally {
             lock.writeLock().unlock();
         }
@@ -131,16 +129,14 @@ public class LRUCache<K, V> implements Cache<K,V> {
     private void startTTLScheduler() {
         executor.scheduleAtFixedRate(() -> {
             log.debug("Running ttl thread");
-            if (!ttlEntries.isEmpty()) {
-                List<LRUCache<K, V>.CacheEntry> evictList = ttlEntries.stream()
-                        .filter(vw -> (vw.ttl > 0 && (System.currentTimeMillis() - vw.enterTs >= vw.ttl)))
-                        .toList();
 
-                evictList.forEach(this::evictEntry);
+            cache.entrySet().stream()
+                    .filter(e -> e.getValue().ttl > 0
+                            && System.currentTimeMillis() - e.getValue().enterTs >= e.getValue().ttl)
+                    .map(Map.Entry::getValue)
+                            .toList().forEach(this::evictEntry);
 
-            } else {
-                log.debug("Cache is empty");
-            }
+
         }, 0, 1, TimeUnit.SECONDS);
     }
 }
