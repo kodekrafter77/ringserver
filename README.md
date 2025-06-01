@@ -4,12 +4,19 @@ This is a very rudimentary caching server not for production environments.
 
 I wanted to learn the distributed system concepts and I prefer doing realtime projects instead of staying theoretical. I implemented leetcode question on Design LRU Cache and immediately idea clicked to make it distributed so that I get a chance to learn about the following in the order of priority:
 
-* Horizontal Scaling Design (In progress)
-* Consistent Hashing & sharding of data (In progress)
-* Hands on with gRPC (Implemented already)
-* LRU Cache with TTL (Implemented already)
-* Leader election (Bully algorithm) - (Planned)
-* Replication of data using Raft (Planned)
+1. Horizontal Scaling Design (In progress)
+2. Consistent Hashing & sharding of data (In progress)
+3. Hands on with gRPC (Implemented already)
+4. LRU Cache with TTL (Implemented already)
+5. Leader election (Bully algorithm) - (Planned)
+6. Replication of data using Raft (Planned)
+7. Automated deployments using Jenkins (Planned)
+8. Containerized cluster with Kubernetes (Planned)
+9. Automated deployment to AWS EKS & GCP GKE (Planned)
+10. Observability using Grafana & OpenTelemetry (Planned)
+11. Distributed tracing using Jaeger or Zipkin (Planned)
+
+Note that 9, 10 & 11 as above are stretch goals, but definitely given a chance to be tried.
 
 Ringserver isn't perfect for production workloads and not even useful for playing around with it, but it's good enough for me to learn about distributed system concepts described above and importantly being hands-on in addition to being only theoretical.
 
@@ -18,3 +25,15 @@ Java is my primary & best known programming language and I've chosen it to imple
 I will attempt to write a parallel project with _golang_ as it's fast becoming favorite programming language I love nowadays. But that's for another day to get real handson experience with _golang_.
 
 Until then, happy learning!
+
+## How to build and run?
+I assume you have Java 21+ and maven installed and mvn executable in in the path. 
+
+Then to build:
+```
+$ mvn clean install
+```
+To run:
+```
+$ java target/ringserver.jar
+```
