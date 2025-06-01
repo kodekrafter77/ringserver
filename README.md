@@ -58,9 +58,9 @@ service LRUCacheService {
 ```
 
 ## How to build and run?
-I assume you have Java 21+ and maven installed and mvn executable in in the path. 
+Assuming Java 21+ and maven installed and the respective bin directories are in PATH system variable. 
 
-Then to build:
+To build:
 ```
 $ mvn clean install
 ```
