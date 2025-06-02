@@ -19,7 +19,7 @@ public class LRUCache<K, V> implements Cache<K,V> {
 
     private final LinkedHashMap<K, CacheEntry> cache;
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final List<CacheEntry> ttlEntries;
+
     private final ScheduledExecutorService executor;
 
     private static final ScheduledExecutorService DEFAULT_EXECUTOR = Executors.newSingleThreadScheduledExecutor();
@@ -66,7 +66,7 @@ public class LRUCache<K, V> implements Cache<K,V> {
                 return size() > capacity;
             }
         };
-        this.ttlEntries = new LinkedList<>();
+
         this.executor = executor;
         startTTLScheduler();
     }
@@ -87,7 +87,6 @@ public class LRUCache<K, V> implements Cache<K,V> {
             lock.writeLock().lock();
             CacheEntry entry = new CacheEntry(key, value, ttl);
             cache.put(key, entry);
-            log.info(ttlEntries.toString());
         } finally {
             lock.writeLock().unlock();
         }
